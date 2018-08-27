@@ -31,7 +31,8 @@ static_assert(sizeof(NsoSegmentHeader) == 0x10, "NsoSegmentHeader has incorrect 
 
 struct NsoHeader {
     u32_le magic;
-    INSERT_PADDING_BYTES(0xc);
+    INSERT_PADDING_BYTES(0x8);
+    u32_le flags;
     std::array<NsoSegmentHeader, 3> segments; // Text, RoData, Data (in that order)
     u32_le bss_size;
     INSERT_PADDING_BYTES(0x1c);
@@ -103,9 +104,11 @@ VAddr AppLoader_NSO::LoadModule(FileSys::VirtualFile file, VAddr load_base) {
     Kernel::SharedPtr<Kernel::CodeSet> codeset = Kernel::CodeSet::Create("");
     std::vector<u8> program_image;
     for (std::size_t i = 0; i < nso_header.segments.size(); ++i) {
-        const std::vector<u8> compressed_data =
+        std::vector<u8> data =
             file->ReadBytes(nso_header.segments_compressed_size[i], nso_header.segments[i].offset);
-        std::vector<u8> data = DecompressSegment(compressed_data, nso_header.segments[i]);
+        if (((nso_header.flags >> i) & 1) != 0) {
+            data = DecompressSegment(data, nso_header.segments[i]);
+        }
         program_image.resize(nso_header.segments[i].location);
         program_image.insert(program_image.end(), data.begin(), data.end());
         codeset->segments[i].addr = nso_header.segments[i].location;
