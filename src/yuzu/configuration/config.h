@@ -42,7 +42,6 @@ private:
     void ReadCoreValues();
     void ReadDataStorageValues();
     void ReadDebuggingValues();
-    void ReadServiceValues();
     void ReadDisabledAddOnValues();
     void ReadMiscellaneousValues();
     void ReadPathValues();
@@ -66,7 +65,6 @@ private:
     void SaveCoreValues();
     void SaveDataStorageValues();
     void SaveDebuggingValues();
-    void SaveServiceValues();
     void SaveDisabledAddOnValues();
     void SaveMiscellaneousValues();
     void SavePathValues();
