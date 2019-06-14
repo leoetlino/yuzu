@@ -1040,6 +1040,9 @@ void IApplicationFunctions::EndBlockingHomeButton(Kernel::HLERequestContext& ctx
 }
 
 void IApplicationFunctions::PopLaunchParameter(Kernel::HLERequestContext& ctx) {
+    IPC::ResponseBuilder rb1{ctx, 2};
+    rb1.Push(ERR_NO_DATA_IN_CHANNEL);
+    return;
     LOG_DEBUG(Service_AM, "called");
 
     LaunchParameters params{};
